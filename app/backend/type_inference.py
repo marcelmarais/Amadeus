@@ -38,7 +38,7 @@ def infer_type(df, target = False) -> dict:
         #ludwig_type = {'name': i, 'type':'text'}
     
     elif current_type == 'bool':
-        ludwig_type = {'name': i, 'type': 'bool'}
+        ludwig_type = {'name': i, 'type': 'category'}
 
 
 
