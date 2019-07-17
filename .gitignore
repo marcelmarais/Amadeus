@@ -1,0 +1,8 @@
+*.csv
+*.vscode
+*.yaml
+outputter.py
+Icon
+__pycache__
+results
+.DS_Store
