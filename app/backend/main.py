@@ -8,17 +8,16 @@ from ludwig.api import LudwigModel
 
 import generate_model
 
-root_dir = os.getcwd()
+root_dir = os.path.abspath(__file__).strip(os.path.basename(__file__))
 
 def find_csv(dir):
   """Returns the csv file found within specified directory"""
-  os.chdir(root_dir + '/' + dir)
 
-  for i in os.listdir():
+  for i in os.listdir(root_dir + '/' + dir):
+    print(i)
     if re.match(r'(.*?)\.(csv)$',i):
-      file_name = dir +'/'+ i
+      file_name = root_dir + dir +'/'+ i
       break
-  os.chdir(root_dir)
 
   return file_name
 

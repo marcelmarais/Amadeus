@@ -35,6 +35,8 @@ class model():
     except:
         print("Error reading test data:", sys.exc_info()[0])
         exit()
+
+    print('Data loaded successfully')
   
   def make_model_file(self, name = 'model') -> None:
     self.model_definition['input_features'] = type_inference.infer_type(self.train_data)
@@ -75,5 +77,5 @@ class model():
 
     
 if __name__ == '__main__':
-  mod = model('train/CAvideos.csv','test/CAvideos.csv')
-  print(mod.get_test_data().head())
+  mod = model('train/train.csv','test/test.csv')
+  print(mod.make_model_file())

@@ -1,6 +1,7 @@
 import json
 import os
 import socket
+import re
 
 import yaml
 import yamlordereddictloader
@@ -14,7 +15,20 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(app)
 
 # training_stats = json.loads(open('results/api_experiment_run_0/training_statistics.json').read())
-model_obj = generate_model.model()
+root_dir = os.path.abspath(__file__).strip(os.path.basename(__file__))
+
+def find_csv(dir):
+  """Returns the csv file found within specified directory"""
+
+  for i in os.listdir(root_dir + '/' + dir):
+    print(i)
+    if re.match(r'(.*?)\.(csv)$',i):
+      file_name = root_dir + dir +'/'+ i
+      break
+
+  return file_name
+
+model_obj = generate_model.model(train_file_path=find_csv('train'),test_file_path=find_csv('test'))
 
 @app.route("/")
 def hello():
