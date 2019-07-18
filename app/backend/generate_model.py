@@ -11,6 +11,7 @@ import type_inference
 class model():
   """The model class contains all data relevant to a model instance"""
   
+ 
   def __init__(self, train_file_path = 'train/train.csv',test_file_path = 'test/test.csv', 
                model_name = 'model'):
 
@@ -19,10 +20,12 @@ class model():
 
     self.model_name = model_name
     self.model_definition = {}
-    
+    self.symbols = ['`','~','!','@','#','$','%','^','&','*','(',')','-','+','=','{','[','}','|','\\',':',';','"','\'','<',',','>','.','?','/']
     try:
       self.train_data = pd.read_csv(self.train_path)
-      self.train_data.columns = self.train_data.columns.str.lower().str.replace(' ', '_').str.replace(':','')
+      self.train_data.columns = self.train_data.columns.str.lower().str.replace(' ', '_')
+      for i in self.symbols:
+        self.train_data.columns = self.train_data.columns.str.replace(i,'')
 
     except:
         print("Error reading train data:", sys.exc_info()[0])
@@ -30,14 +33,16 @@ class model():
     
     try:
       self.test_data = pd.read_csv(self.test_path)
-      self.test_data.columns = self.test_data.columns.str.lower().str.replace(' ', '_').str.replace(':','')
-
+      self.test_data.columns = self.test_data.columns.str.lower().str.replace(' ', '_')
+      for i in self.symbols:
+        self.test_data.columns = self.test_data.columns.str.replace(i,'')
+    
     except:
         print("Error reading test data:", sys.exc_info()[0])
         exit()
+    
+    del(self.symbols)
 
-    print('Data loaded successfully')
-  
   def make_model_file(self, name = 'model') -> None:
     self.model_definition['input_features'] = type_inference.infer_type(self.train_data)
     self.model_definition['output_features'] = type_inference.infer_type(self.train_data,target=True)
@@ -77,5 +82,5 @@ class model():
 
     
 if __name__ == '__main__':
-  mod = model('train/train.csv','test/test.csv')
-  print(mod.make_model_file())
+  mod = model('train/CAvideos.csv','test/CAvideos.csv')
+  print(mod.get_test_data().head())
