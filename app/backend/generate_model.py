@@ -22,12 +22,16 @@ class model():
     
     try:
       self.train_data = pd.read_csv(self.train_path)
+      self.train_data.columns = self.train_data.columns.str.lower().str.replace(' ', '_').str.replace(':','')
+
     except:
         print("Error reading train data:", sys.exc_info()[0])
         exit()
     
     try:
       self.test_data = pd.read_csv(self.test_path)
+      self.test_data.columns = self.test_data.columns.str.lower().str.replace(' ', '_').str.replace(':','')
+
     except:
         print("Error reading test data:", sys.exc_info()[0])
         exit()
@@ -71,5 +75,5 @@ class model():
 
     
 if __name__ == '__main__':
-  mod = model('train/train.csv')
-  print(mod)
+  mod = model('train/CAvideos.csv','test/CAvideos.csv')
+  print(mod.get_test_data().head())
