@@ -6,3 +6,4 @@ Icon
 __pycache__
 results
 .DS_Store
+start.sh

@@ -44,7 +44,7 @@ def get_training_stats():
 def get_model_data():
     with open('herefile.yaml') as f:
         model_data = yaml.load(f, Loader=yamlordereddictloader.Loader)
-    return jsonify(model_data)
+    return json.dumps(model_data)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=2000, debug=True)
