@@ -13,13 +13,15 @@ class model():
   
  
   def __init__(self, train_file_path = 'train/train.csv',test_file_path = 'test/test.csv', 
-               model_name = 'model'):
+               model_name = 'model', target_name = 'target'):
 
     self.train_path = train_file_path
     self.test_path = test_file_path
 
+    self.target = target_name
     self.model_name = model_name
     self.model_definition = {}
+    
     self.symbols = ['`','~','!','@','#','$','%','^','&','*','(',')','-','+','=','{','[','}','|','\\',':',';','"','\'','<',',','>','.','?','/']
     try:
       self.train_data = pd.read_csv(self.train_path)
@@ -44,8 +46,10 @@ class model():
     del(self.symbols)
 
   def make_model_file(self, name = 'model') -> None:
-    self.model_definition['input_features'] = type_inference.infer_type(self.train_data)
-    self.model_definition['output_features'] = type_inference.infer_type(self.train_data,target=True)
+
+    print(self.target)
+    self.model_definition['input_features'] = type_inference.infer_type(self.train_data, self.target)
+    self.model_definition['output_features'] = type_inference.infer_type(self.train_data,self.target,target=True)
     #model_definition['training'] = {'batch_size':16,'epochs':1000,'early_stop':50,'learning_rate':0.001, 'optimiser':[{'type':'adam'}]}
 
     with open(name + '.yaml',mode = 'w') as f:
@@ -82,5 +86,5 @@ class model():
 
     
 if __name__ == '__main__':
-  mod = model('train/CAvideos.csv','test/CAvideos.csv')
-  print(mod.get_test_data().head())
+  mod = model(target_name = 'thishere',train_file_path = 'train/sales.csv')
+  print(mod.get_model())

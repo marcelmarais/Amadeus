@@ -5,7 +5,7 @@ import re
 
 import yaml
 import yamlordereddictloader
-from flask import Flask, jsonify, url_for, request
+from flask import Flask, jsonify, url_for, request, Response
 from flask_cors import CORS, cross_origin
 
 import generate_model
@@ -21,7 +21,6 @@ def find_csv(dir):
   """Returns the csv file found within specified directory"""
 
   for i in os.listdir(root_dir + '/' + dir):
-    print(i)
     if re.match(r'(.*?)\.(csv)$',i):
       file_name = root_dir + dir +'/'+ i
       break
@@ -38,14 +37,19 @@ def hello():
     return html.format(name=os.getenv("NAME", "asd"), hostname=socket.gethostname())
 
 @app.route('/generate-model-file', methods=['POST'])
-def form_example():
+def make_model():
+
     if request.method == 'POST':
         print(request.get_json())
         try:
-            name = request.get_json()['name']
+            req = request.get_json()
+            model_obj = generate_model.model(train_file_path=find_csv('train'),test_file_path=find_csv('test'),
+                                            target_name = req['target_name'])
+            model_name = req['model_name']
         except:
-            name = 'file'
-        model_obj.make_model_file(name = name)
+            return Response({'Error':'Target name not found'},status = 404)
+
+        model_obj.make_model_file(name = model_name)
         return '<h3>model.yaml file created</h3>'
 
 
@@ -54,7 +58,7 @@ def get_training_stats():
     pass
 
 
-@app.route('/model_info/', methods=['GET'])
+@app.route('/model-info/', methods=['GET'])
 def get_model_data():
     with open('herefile.yaml') as f:
         model_data = yaml.load(f, Loader=yamlordereddictloader.Loader)

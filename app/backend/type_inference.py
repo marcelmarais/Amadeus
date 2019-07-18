@@ -1,7 +1,22 @@
 import pandas as pd
+import terminal_colours
 
-def infer_type(df, target = False) -> dict:
-  feature_columns = list(df.drop(axis = 1,columns = ['target']))
+from colorama import init
+from colorama import Fore, Style
+
+tc = terminal_colours.bcolors()
+
+def infer_type(df, target_name,target = False) -> dict:
+
+  try:
+    feature_columns = list(df.drop(axis = 1,columns = [target_name]))
+    
+    if target:
+      print(f'\n{Fore.BLUE}Target: {target_name} was found successfully{Style.RESET_ALL}\n')
+  except:
+    print(f'\n{Fore.RED}Target name not found in dataset.{Style.RESET_ALL}\n')
+    exit()
+
   all_ludwig_types = []
   types = df.infer_objects().dtypes
 
@@ -48,6 +63,6 @@ def infer_type(df, target = False) -> dict:
 
 
 if __name__ == '__main__':
-  print(infer_type(pd.read_csv('train.csv'),target = True))
+  pass
   
   

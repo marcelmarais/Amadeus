@@ -47,24 +47,31 @@ function ModelData() {
   function generateModel() {
     Http.open("POST", url + 'generate-model-file');
     Http.setRequestHeader("Content-type", "application/json");
-    Http.send('{"name":"herefile"}');
-    getModelData();
+    console.log(document.getElementById("targetName").value);
+    Http.send('{"model_name":"herefile","target_name":"'+document.getElementById("targetName").value +'"}');
+
+    Http.onreadystatechange = (e) => {
+      if (Http.readyState === 4 && Http.status === 200) {
+        getModelData();
+      }else{
+        console.log(Http.status)
+      }
+    }
   }
 
   function getModelData() {
     Http = new XMLHttpRequest();
 
-    Http.open("GET", url + 'model_info')
+    Http.open("GET", url + 'model-info')
     Http.send();
 
     Http.onreadystatechange = (e) => {
       if (Http.readyState === 4 && Http.status === 200) {
         try {
-          
           var model = JSON.parse(Http.responseText)
           console.log(model)
           document.getElementById('modelData').innerHTML = "<h3> Input Features </h3>" + json2table(model['input_features']);
-          document.getElementById('genModel').style.display='none';
+          document.getElementById('genModel').style.display = 'none';
         } catch (err) {
           console.log(err);
         }
@@ -76,10 +83,15 @@ function ModelData() {
 
 
   return (
-    <div className='container'>
-      <button id = 'genModel' onClick={generateModel} >Load Model</button>
-      <br></br>
-      <p id='modelData'></p>
+    <div className = 'center-horizontal'>
+      <div className='container'>
+        <div className='row'>
+          <input id = 'targetName'></input>
+        </div>
+        <button id='genModel' onClick={generateModel} >Load Model</button>
+        <br></br>
+        <p id='modelData'></p>
+      </div>
     </div>
   );
 }
