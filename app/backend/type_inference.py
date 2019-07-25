@@ -1,10 +1,8 @@
 import pandas as pd
-import terminal_colours
 
 from colorama import init
 from colorama import Fore, Style
 
-tc = terminal_colours.bcolors()
 
 def infer_type(df, target_name,target = False) -> dict:
 

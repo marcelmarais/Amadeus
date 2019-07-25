@@ -1,6 +1,9 @@
 *.csv
 *.vscode
 *.yaml
+*.pkl
+train/
+test/
 outputter.py
 Icon
 __pycache__

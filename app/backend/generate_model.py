@@ -8,12 +8,12 @@ import yaml
 
 import type_inference
 
+
 class model():
   """The model class contains all data relevant to a model instance"""
   
- 
   def __init__(self, train_file_path = 'train/train.csv',test_file_path = 'test/test.csv', 
-               model_name = 'model', target_name = 'target'):
+               model_name = 'model', target_name = 'scalar_coupling_constant'):
 
     self.train_path = train_file_path
     self.test_path = test_file_path
@@ -28,6 +28,8 @@ class model():
       self.train_data.columns = self.train_data.columns.str.lower().str.replace(' ', '_')
       for i in self.symbols:
         self.train_data.columns = self.train_data.columns.str.replace(i,'')
+      
+      self.train_data.to_pickle(self.train_path.replace('.csv','.pkl'))
 
     except:
         print("Error reading train data:", sys.exc_info()[0])
@@ -38,6 +40,9 @@ class model():
       self.test_data.columns = self.test_data.columns.str.lower().str.replace(' ', '_')
       for i in self.symbols:
         self.test_data.columns = self.test_data.columns.str.replace(i,'')
+
+      self.test_data.to_pickle(self.test_path.replace('.csv','.pkl'))
+
     
     except:
         print("Error reading test data:", sys.exc_info()[0])
@@ -47,12 +52,11 @@ class model():
 
   def make_model_file(self, name = 'model') -> None:
 
-    print(self.target)
     self.model_definition['input_features'] = type_inference.infer_type(self.train_data, self.target)
     self.model_definition['output_features'] = type_inference.infer_type(self.train_data,self.target,target=True)
     #model_definition['training'] = {'batch_size':16,'epochs':1000,'early_stop':50,'learning_rate':0.001, 'optimiser':[{'type':'adam'}]}
 
-    with open(name + '.yaml',mode = 'w') as f:
+    with open(name,mode = 'w') as f:
       f.write(yaml.dump(self.model_definition))
 
   def get_model(self) -> dict:
@@ -86,5 +90,5 @@ class model():
 
     
 if __name__ == '__main__':
-  mod = model(target_name = 'thishere',train_file_path = 'train/sales.csv')
+  mod = model(train_file_path = 'train/train.csv')
   print(mod.get_model())
