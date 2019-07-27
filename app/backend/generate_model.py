@@ -52,12 +52,18 @@ class model():
 
   def make_model_file(self, name = 'model') -> None:
 
-    self.model_definition['input_features'] = type_inference.infer_type(self.train_data, self.target)
     self.model_definition['output_features'] = type_inference.infer_type(self.train_data,self.target,target=True)
+    if self.model_definition['output_features'] == None:
+      return None
+    self.model_definition['input_features'] = type_inference.infer_type(self.train_data, self.target)
+      
+
     #model_definition['training'] = {'batch_size':16,'epochs':1000,'early_stop':50,'learning_rate':0.001, 'optimiser':[{'type':'adam'}]}
 
     with open(name,mode = 'w') as f:
       f.write(yaml.dump(self.model_definition))
+
+    return self.model_definition
 
   def get_model(self) -> dict:
     """Makes model file if not found"""

@@ -34,17 +34,24 @@ def test():
 @app.route('/generate-model-file', methods=['POST'])
 def generate_model_file():
     if request.method == 'POST':
-        print(request.get_json())
         try:
             req = request.get_json()
             model_obj = generate_model.model(train_file_path=train_csv,test_file_path=test_csv,
                                             target_name = req['target_name'])
+
             global model_name
             model_name = req['model_name']+'.yaml'
         except:
             return Response({'Error':'Target name not found'},status = 404)
 
-        model_obj.make_model_file(name = model_name)
+        
+        if model_obj.make_model_file(name = model_name) == None:
+            print('here')
+            return Response({'Error':'Target name not found'},status = 404)
+
+
+
+
         return '<h3>model.yaml file created</h3>'
 
 @app.route('/model-info/', methods=['GET'])

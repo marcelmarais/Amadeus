@@ -12,8 +12,8 @@ def infer_type(df, target_name,target = False) -> dict:
     if target:
       print(f'\n{Fore.BLUE}Target: {target_name} was found successfully{Style.RESET_ALL}\n')
   except:
-    print(f'\n{Fore.RED}Target name not found in dataset.{Style.RESET_ALL}\n')
-    exit()
+    print(f'\n{Fore.RED}Target: {target_name} not found in dataset.{Style.RESET_ALL}\n')
+    return None
 
   all_ludwig_types = []
   types = df.infer_objects().dtypes
