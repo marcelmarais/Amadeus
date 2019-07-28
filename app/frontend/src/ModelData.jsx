@@ -357,7 +357,6 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     minWidth: 400,
-    height: 400,
   },
   tableWrapper: {
     overflowX: 'auto',
@@ -468,7 +467,7 @@ export default function EnhancedTable() {
                   );
                 })}
               {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
+                <TableRow style={{ height: 0 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
@@ -494,7 +493,10 @@ export default function EnhancedTable() {
       </Paper>
       );
     ReactDOM.render(element, document.getElementById('all'));
+    document.getElementById('train').style.display = 'inherit';
 }
+
+
   function generateModel() {
     Http.open("POST", url + 'generate-model-file');
     Http.setRequestHeader("Content-type", "application/json");
@@ -531,6 +533,13 @@ export default function EnhancedTable() {
       }
     }
   }
+
+  function trainModel(){
+    Http = new XMLHttpRequest();
+  
+    Http.open("GET", url + 'train-model')
+    Http.send();
+  }
   const isSelected = name => selected.indexOf(name) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -546,6 +555,10 @@ export default function EnhancedTable() {
       </Button>
       <div id = 'all' >
       </div>
+      <Button 
+      id = 'train' onClick = {trainModel} style = {{display:'none'}}
+      variant="contained"  color="secondary">
+        Start training!</Button>
       </Grid>
       
     </div>
