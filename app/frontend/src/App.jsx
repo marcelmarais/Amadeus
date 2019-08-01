@@ -1,7 +1,8 @@
 import React from 'react';
 import TrainingStats from './TrainingStats'
-import ModelData from './ModelData'
+import HorizontalLinearStepper from './Navigation'
 import './styles.css';
+
 
 function App() {
   return (
@@ -10,8 +11,7 @@ function App() {
         <div style={{ paddingTop: '40px' }} className='container'>
           <div className='center-horizontal'>
             <div className='row'>
-              <h1 style={{ 'align': 'center' }}>Welcome to Amadeus</h1>
-              <ModelData ></ModelData>
+              <HorizontalLinearStepper></HorizontalLinearStepper>
             </div>
           </div>
         </div>

@@ -1,149 +1,3 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-
-// import Button from '@material-ui/core/Button';
-// import TextField from '@material-ui/core/TextField';
-// import Container from '@material-ui/core/Container';
-// import Grid from '@material-ui/core/Grid';
-// import GridList from '@material-ui/core/GridList';
-// import ListSubheader from '@material-ui/core/ListSubheader';
-// import { makeStyles } from '@material-ui/core/styles';
-// import Table from '@material-ui/core/Table';
-
-// import TableBody from '@material-ui/core/TableBody';
-// import TableCell from '@material-ui/core/TableCell';
-// import TableHead from '@material-ui/core/TableHead';
-// import TablePagination from '@material-ui/core/TablePagination';
-// import TableRow from '@material-ui/core/TableRow';
-// import TableSortLabel from '@material-ui/core/TableSortLabel';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import { ReactMUIDatatable } from "react-material-ui-datatable";
-
-
-// import './styles.css';
-
-// function ModelData() {
-
-//   var Http = new XMLHttpRequest();
-//   const url = 'http://localhost:2000/';
-//   var model_data = '';
-
-
-//   function createData(n, t) {
-//     return { name: n, type: t };
-//   }
-
-//   const columns = [
-//     {
-//       name: "name",
-//       label: "Name"
-//     },
-//     {
-//       name: "type",
-//       label: "Type"
-//     },
-//   ];
-
-
-//   var dataRows = [];
-//   function createTable(json) {
-
-//     json.forEach((item, i) => {
-//       dataRows.push(createData(item.name, item.type));
-//     });
-
-//   }
-
-//   function generateModel() {
-//     Http.open("POST", url + 'generate-model-file');
-//     Http.setRequestHeader("Content-type", "application/json");
-//     console.log(document.getElementById("targetName").value);
-//     Http.send('{"model_name":"herefile","target_name":"' + document.getElementById("targetName").value + '"}');
-
-//     Http.onreadystatechange = (e) => {
-//       if (Http.readyState === 4 && Http.status === 200) {
-//         getModelData();
-//       } else {
-//         console.log(Http.status)
-//       }
-//     }
-//   }
-
-
-//   function getModelData() {
-//     Http = new XMLHttpRequest();
-
-//     Http.open("GET", url + 'model-info')
-//     Http.send();
-
-//     Http.onreadystatechange = (e) => {
-//       if (Http.readyState === 4 && Http.status === 200) {
-//         try {
-//           var model = JSON.parse(Http.responseText)
-//           console.log(model)
-//           createTable(model['input_features']);
-//           console.log(dataRows);
-//           document.getElementById('genModel').style.display = 'none';
-//           showModelData();
-
-//         } catch (err) {
-//           console.log(err);
-//         }
-
-//       }
-//     }
-//   }
-
-//   function EnhancedTableHead(props) {
-//     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-//     const createSortHandler = property => event => {
-//       onRequestSort(event, property);
-//     };
-//   }
-
-//   function showModelData() {
-
-//     const element = (
-//       <Table>
-
-//       </Table>
-//     );
-//     ReactDOM.render(element, document.getElementById('modelTable'));
-//   }
-
-
-
-
-
-//   return (
-//     <div width = '500px'>
-
-
-//         <Grid
-//           container
-//           direction="column"
-//           justify="space-between"
-//           alignItems="center"
-//           justifyContent='space-around'
-//         >
-
-//           <TextField id='targetName'>survived</TextField>
-//           <br></br>
-//           <Button id='genModel' variant="contained" color="primary" onClick={generateModel}>
-//             Load Model
-//         </Button>
-
-//           <div align="center" id='modelData'></div>
-//           <div id='modelTable'></div>
-//           {showModelData}
-
-//         </Grid>
-
-//     </div>
-//   );
-// }
-// export default ModelData;
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -160,11 +14,10 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
+
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
@@ -275,8 +128,8 @@ EnhancedTableHead.propTypes = {
 
 const useToolbarStyles = makeStyles(theme => ({
   root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
+    // paddingLeft: theme.spacing(2),
+    // paddingRight: theme.spacing(2),
   },
   highlight:
   theme.palette.type === 'light'
@@ -356,14 +209,14 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(2),
   },
   table: {
-    minWidth: 400,
+    minWidth: 350,
   },
   tableWrapper: {
     overflowX: 'auto',
   },
 }));
 
-export default function EnhancedTable() {
+export function EnhancedTable() {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -419,10 +272,32 @@ export default function EnhancedTable() {
     function handleChangeDense(event) {
       setDense(event.target.checked);
     }
+
+    function getModelData() {
+      Http = new XMLHttpRequest();
+    
+      Http.open("GET", url + 'model-info')
+      Http.send();
+    
+      Http.onreadystatechange = (e) => {
+        if (Http.readyState === 4 && Http.status === 200) {
+          try {
+            var model = JSON.parse(Http.responseText)
+            createTable(model['input_features']);
+            showTable();
+    
+          } catch (err) {
+            console.log(err);
+          }
+    
+        }
+      }
+    }
     
     function showTable(){
       console.log(rows);
-      const element = (
+      console.log('here');
+      var element = (
         <Paper className={classes.paper}>
         <div id = 'tableWrapper' className={classes.tableWrapper}>
         <EnhancedTableToolbar numSelected={selected.length} />
@@ -492,76 +367,29 @@ export default function EnhancedTable() {
           
       </Paper>
       );
-    ReactDOM.render(element, document.getElementById('all'));
-    document.getElementById('train').style.display = 'inherit';
-}
-
-
-  function generateModel() {
-    Http.open("POST", url + 'generate-model-file');
-    Http.setRequestHeader("Content-type", "application/json");
-    console.log(document.getElementById("targetName").value);
-    Http.send('{"model_name":"herefile","target_name":"' + document.getElementById("targetName").value + '"}');
-  
-    Http.onreadystatechange = (e) => {
-      if (Http.readyState === 4 && Http.status === 200) {
-        getModelData();
-      } else {
-        console.log(Http.status)
-      }
+      ReactDOM.render(element, document.getElementById("all"));
     }
-  }
-  function getModelData() {
-    Http = new XMLHttpRequest();
-  
-    Http.open("GET", url + 'model-info')
-    Http.send();
-  
-    Http.onreadystatechange = (e) => {
-      if (Http.readyState === 4 && Http.status === 200) {
-        try {
-          var model = JSON.parse(Http.responseText)
-          createTable(model['input_features']);
-          console.log(rows);
-          document.getElementById('genModel').style.display = 'none';
-          showTable();
-  
-        } catch (err) {
-          console.log(err);
-        }
-  
-      }
-    }
-  }
 
-  function trainModel(){
-    Http = new XMLHttpRequest();
-  
-    Http.open("GET", url + 'train-model')
-    Http.send();
-  }
-  const isSelected = name => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
-  return (
-    <div className={classes.root}>
+const isSelected = name => selected.indexOf(name) !== -1;
+
+const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+
+return (
+  <div className={classes.root}>
       <Grid align = 'center'>
       <TextField id='targetName'>survived</TextField>
       <br></br>
       <br></br>
-      <Button id='genModel' variant="contained" color="primary" onClick={generateModel}>
-        Load Model
-      </Button>
-      <div id = 'all' >
-      </div>
-      <Button 
-      id = 'train' onClick = {trainModel} style = {{display:'none'}}
-      variant="contained"  color="secondary">
-        Start training!</Button>
+      <Button onClick={getModelData}>Show</Button>
+      <div id = "all" ></div>
       </Grid>
-      
+        
     </div>
-  );
-}
 
+  );
+  
+  
+}  
