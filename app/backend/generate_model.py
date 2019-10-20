@@ -25,7 +25,7 @@ class model():
     self.symbols = ['`','~','!','@','#','$','%','^','&','*','(',')','-','+','=','{','[','}','|','\\',':',';','"','\'','<',',','>','.','?','/']
     try:
       self.train_data = pd.read_csv(self.train_path)
-      self.train_data.columns = self.train_data.columns.str.lower().str.replace(' ', '_')
+      self.train_data.columns = self.train_data.columns.str.replace(' ', '_')
       for i in self.symbols:
         self.train_data.columns = self.train_data.columns.str.replace(i,'')
       
@@ -53,6 +53,7 @@ class model():
   def make_model_file(self, name = 'model') -> None:
 
     self.model_definition['output_features'] = type_inference.infer_type(self.train_data,self.target,target=True)
+    # Check if target is found in dataset.
     if self.model_definition['output_features'] == None:
       return None
     self.model_definition['input_features'] = type_inference.infer_type(self.train_data, self.target)
@@ -72,6 +73,11 @@ class model():
 
     return self.model_definition
   
+  def get_descrip(self):
+    desc = self.train_data.describe()
+    desc = pd.DataFrame(desc.to_records()).round(1)
+    return desc
+
   def get_train_data(self) -> pd.DataFrame:
     return self.train_data
   
@@ -97,4 +103,4 @@ class model():
     
 if __name__ == '__main__':
   mod = model(train_file_path = 'train/train.csv')
-  print(mod.get_model())
+  print(mod.get_descrip())

@@ -5,7 +5,7 @@ var Http = new XMLHttpRequest();
 const url = 'http://localhost:2000/';
 var validNext = false;
 var model_data = '';
-
+const axios = require('axios')
 
 function createData(name, type) {
   return { name, type };
@@ -25,37 +25,26 @@ const columns = [
 
 var rows = [];
 function createTable(json) {
-
+var rows = [];
   json.forEach((item, i) => {
     rows.push(createData(item.name, item.type));
   });
-
+  return rows;
 }
-export function getModelData() {
-  Http = new XMLHttpRequest();
+export async function getModelData() {
+  const req =  await axios.get(url + 'model-info');
+  return req
+}
 
-  Http.open("GET", url + 'model-info')
-  Http.send();
-
-  Http.onreadystatechange = (e) => {
-    if (Http.readyState === 4 && Http.status === 200) {
-      try {
-        var model = JSON.parse(Http.responseText)
-        return createTable(model['input_features']);
-
-      } catch (err) {
-        console.log(err);
-      }
-
-    }
-  }
+export async function getModelDescription() {
+  const req =  await axios.get(url + 'data-description');
+  return req
 }
 
 export function generateModel() {
   
   Http.open("POST", url + 'generate-model-file');
   Http.setRequestHeader("Content-type", "application/json");
-  console.log(document.getElementById("targetName").value);
   Http.send('{"model_name":"herefile","target_name":"' + document.getElementById("targetName").value + '"}');
 
   Http.onreadystatechange = (e) => {
@@ -63,7 +52,10 @@ export function generateModel() {
       validNext = true;
       getModelData();
       return true;
-    } else {
+    }else if(Http.status === 404){
+      alert('Target not found in dataset.');
+    }
+     else {
       validNext = false;
       console.log(Http.status)
       return false;

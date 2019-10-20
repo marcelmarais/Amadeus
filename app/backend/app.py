@@ -31,6 +31,13 @@ def test():
            "<b>{hostname}<br/>" 
     return html.format(name=os.getenv("NAME", "Amadeus"), hostname=socket.gethostname())
 
+@app.route('/data-description/', methods=['GET'])
+def get_data_descrip():
+   
+        
+    descrip = model_obj.get_descrip().to_json(orient = 'records')
+    return Response(descrip, status = 200)
+    
 @app.route('/generate-model-file', methods=['POST'])
 def generate_model_file():
     if request.method == 'POST':
@@ -57,8 +64,9 @@ def generate_model_file():
 @app.route('/model-info/', methods=['GET'])
 def get_model_data():
     with open(model_name) as f:
-        model_data = yaml.load(f, Loader=yamlordereddictloader.Loader)
-    return json.dumps(model_data)
+        model_data = yaml.load(f)
+        print(model_data)
+    return json.dumps(model_data['input_features'])
 
 @app.route('/train-model/', methods=['GET'])
 def train_model():
@@ -70,8 +78,6 @@ def train_model():
 @app.route('/training-stats/', methods=['GET'])
 def get_training_stats():
     pass
-
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=2000, debug=True)

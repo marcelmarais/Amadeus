@@ -6,10 +6,11 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import StepIcon from '@material-ui/core/StepIcon';
-import { generateModel, getModelData, trainModel, canNext } from './modelState'
-import {EnhancedTable} from './DataTable'
+import { getModelDescription, generateModel, getModelData, trainModel, canNext } from './modelState'
+import DescriptionTable from './DataDescriptionTable'
+import ModelTable from './ModelInfoTable.jsx'
 import ReactDOM from 'react-dom';
-
+import Selector from './TargetSelector.jsx';
 import './styles.css';
 
 const useStyles = makeStyles(theme => ({
@@ -57,6 +58,7 @@ function getStepContent(step) {
 }
 
 export default function HorizontalLinearStepper() {
+
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
@@ -71,7 +73,6 @@ export default function HorizontalLinearStepper() {
   }
 
   function handleNext() {
-
 
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
@@ -107,24 +108,32 @@ export default function HorizontalLinearStepper() {
     setActiveStep(0);
   }
 
-  function handleButton(){
+  function handleButton() {
     var step = steps[activeStep].split(' ')[0];
-    if(step === 'Select'){
-      try{
-        generateModel(); 
+    if (step === 'Select') {
+
+      try {
+        generateModel();
         setTimeout(() => {
-          if (canNext()== true){
+          if (canNext() == true) {
             handleNext();
+            ReactDOM.render((
+              <div>
+                <div style={{ height: '20px' }}></div>
+                <ModelTable data={getModelData()}></ModelTable>
+              </div>
+            ), document.getElementById('table'))
           }
-        },1000)
+        }, 1000)
+
       }
-      catch(err){
+      catch (err) {
         alert(err);
       }
-    }else{
+    } else {
       alert('Target not found in dataset.');
     }
-    if(step === 'Train'){
+    if (step === 'Train') {
       trainModel();
     }
 
@@ -174,13 +183,17 @@ export default function HorizontalLinearStepper() {
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick = {(event) => { handleButton();}}
+                  onClick={(event) => { handleButton(); }}
                   className={classes.button}
                 >
                   {steps[activeStep].split(' ')[0]}
                 </Button>
-                {EnhancedTable()}
-                <div id = 'table'></div>
+                <div id='table'>
+                  <div style={{ height: '20px' }}></div>
+                  <Selector></Selector>
+                  <div style={{ height: '20px' }}></div>
+                  <DescriptionTable data={getModelDescription()}></DescriptionTable>
+                </div>
               </div>
             </div>
           )}
